@@ -1,0 +1,57 @@
+import pymysql
+
+class MysqlSearch(object):
+
+    def __init__(self):
+        self.get_conn()
+
+    def get_conn(self):
+        try:
+            #connect
+            self.conn = pymysql.connect(
+                host ='127.0.0.1',
+                user='root',
+                password='1234',
+                db='myFirst',
+                port=3306,
+                charset='utf8'
+            )
+        except Exception as e:
+            print(e)
+
+    def close_conn(self):
+        try:
+            if self.conn:
+                #close connection
+                self.conn.close()
+
+        except Exception as e:
+            print(e)
+
+    def get_info(self):
+        #sql
+        sql = "SELECT * FROM customers;"
+        #find cursor
+        cursor = self.conn.cursor()
+        #execute sql
+        cursor.execute(sql)
+        #get results
+        #-rest = cursor.fetchall() #fetch all data, fetchone(): fetch a piece of data
+        #-print(cursor.rowcount) #print how many rows in the database
+        rest = dict(zip([k[0] for k in cursor.description], cursor.fetchone()))
+        #process results
+        #print(rest)
+        #close cursor
+        cursor.close()
+        #close connection
+        self.close_conn()
+        return rest
+
+def main():
+    obj = MysqlSearch()
+    #obj.get_info()
+    result = obj.get_info()
+    print(result['name'])
+
+if __name__ == '__main__':
+    main()
