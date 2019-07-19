@@ -75,11 +75,11 @@ class MysqlSearch(object):
            self.conn.commit()
            #close cursor/connection
            cursor.close()
-           self.close_conn()
         except:
            print('error')
            #self.conn.commit()   #correct sql has been submitted successfully: 1st sql
            self.conn.rollback()
+        self.close_conn()
 
 def main():
     obj = MysqlSearch()
