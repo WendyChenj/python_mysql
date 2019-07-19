@@ -62,24 +62,28 @@ class MysqlSearch(object):
         self.close_conn()
         return rest
     
-    def add_one(self):
+     def add_one(self):
         try:
-           #sql
-           sql = "INSERT INTO customers (id, address, phone, name) values (%s, %s, %s, %s);"
-           #create cursor
+           # sql
+           sql = "INSERT INTO customers(id, address, phone, name) values(%s, %s, %s, %s);"
+           # create cursor
            cursor = self.conn.cursor()
-           #execute sql/ submit data to database
-           cursor.execute(sql, (1, 'hhh', 111, 'michael'))
-           cursor.execute(sql, (2, 'hhh', 666, 'cao', 'wang'))
-           #commit
+           # execute sql
+           # submit date to database(提交数据到数据库)
+           cursor.execute(sql, (16, 'zhao', 555, 'hhh'))
+           cursor.execute(sql, (17, 'hhh', 666, 'cao', 'wang'))
+           # commit(提交事务）
            self.conn.commit()
-           #close cursor/connection
-           cursor.close()
         except:
            print('error')
-           #self.conn.commit()   #correct sql has been submitted successfully: 1st sql
-           self.conn.rollback()
+           self.conn.commit()   #part of sql has been submitted: sql(16,...) success
+           #self.conn.rollback() #回滚事务
+        row_count = cursor.rowcount
+        # close cursor/connection
+        cursor.close()
         self.close_conn()
+        # row_count > 0: success
+        return row_count > 0
 
 def main():
     obj = MysqlSearch()
