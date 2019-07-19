@@ -28,7 +28,7 @@ class MysqlSearch(object):
         except Exception as e:
             print(e)
 
-    def get_info(self):
+    def get_one(self):
         #sql
         sql = "SELECT * FROM customers;"
         #find cursor
@@ -46,12 +46,49 @@ class MysqlSearch(object):
         #close connection
         self.close_conn()
         return rest
+    
+    def get_more(self):
+        # sql
+        sql = "SELECT * FROM customers;"
+        # find cursor
+        cursor = self.conn.cursor()
+        # execute sql
+        cursor.execute(sql)
+        # get results
+        rest = [dict(zip([k[0] for k in cursor.description], row)) for row in cursor.fetchall()] #transfer to a list
+        #close cursor
+        cursor.close()
+        #close connection
+        self.close_conn()
+        return rest
+    
+    def add_one(self):
+        try:
+           #sql
+           sql = "INSERT INTO customers (id, address, phone, name) values (%s, %s, %s, %s);"
+           #create cursor
+           cursor = self.conn.cursor()
+           #execute sql/ submit data to database
+           cursor.execute(sql, (1, 'hhh', 111, 'michael'))
+           cursor.execute(sql, (2, 'hhh', 666, 'cao', 'wang'))
+           #commit
+           self.conn.commit()
+           #close cursor/connection
+           cursor.close()
+           self.close_conn()
+        except:
+           print('error')
+           #self.conn.commit()   #correct sql has been submitted successfully: 1st sql
+           self.conn.rollback()
 
 def main():
     obj = MysqlSearch()
-    #obj.get_info()
-    result = obj.get_info()
-    print(result['name'])
+    #obj.get_one()
+    #result = obj.get_one()
+    #print(result['name'])
+    #result = obj.get_more()
+    #print(result)
+    obj.add_one()
 
 if __name__ == '__main__':
     main()
